@@ -7,7 +7,6 @@
 //
 
 #import "GMKeyboardVC.h"
-#import "Utilities.h"
 
 @implementation GMKeyboardVC
 
@@ -22,7 +21,7 @@
 	
     // Get the size of the keyboard.
     NSDictionary* info  = [aNotification userInfo];
-    NSValue* aValue     = [info objectForKey:UIKeyboardBoundsUserInfoKey];
+    NSValue* aValue     = [info objectForKey:UIKeyboardFrameBeginUserInfoKey];
     CGSize keyboardSize = [aValue CGRectValue].size;
 
     // Get the animation duration
@@ -42,7 +41,15 @@
         }
     }
     CGFloat curBottom = firstRespFrame.origin.y + firstRespFrame.size.height;
-    CGFloat newBottom = self.view.frame.size.height - keyboardSize.height - 20;
+    CGFloat newBottom;
+
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+      newBottom = self.view.frame.size.height - keyboardSize.width - 20;
+    }
+    else {
+      newBottom = self.view.frame.size.height - keyboardSize.height - 20;
+    }
+  
     CGFloat deltaY = curBottom - newBottom;
     
     // Move the view controller's view up because of the keyboard
